@@ -13,6 +13,7 @@
 <script setup lang="ts">
 import { Check } from "@element-plus/icons-vue";
 import Test from "@/components/Test.vue";
+console.log(import.meta.env.VITE_APP_TITLE);
 </script>
 
 <style scoped></style>
