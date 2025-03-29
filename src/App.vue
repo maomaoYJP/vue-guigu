@@ -6,11 +6,13 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="400"
     />
+    <Test />
   </div>
 </template>
 
 <script setup lang="ts">
 import { Check } from "@element-plus/icons-vue";
+import Test from "@/components/Test.vue";
 </script>
 
 <style scoped></style>
