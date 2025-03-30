@@ -6,7 +6,18 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import axios from "axios";
+
+axios
+  .post("/api/user/login", {
+    username: "admin",
+    password: "123456",
+  })
+  .then((res) => {
+    console.log(res.data);
+  });
+</script>
 
 <style scoped lang="scss">
 div {
