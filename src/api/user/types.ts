@@ -3,13 +3,15 @@ export interface LoginFormData {
   password: string;
 }
 export interface Response {
-  code: number;
-  message?: string;
+  code?: number;
+  message: string;
   ok?: boolean;
 }
 
 export interface LoginResponse extends Response {
-  data?: string;
+  data: {
+    token?: string;
+  };
 }
 export interface userInfoResponse extends Response {
   data: {

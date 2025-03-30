@@ -13,9 +13,13 @@
             show-password
           ></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-button class="login-btn" type="primary">登录</el-button>
-        </el-form-item>
+        <el-button
+          :loading="loading"
+          class="login-btn"
+          type="primary"
+          @click="login"
+          >登录</el-button
+        >
       </el-form>
     </div>
   </div>
@@ -24,13 +28,36 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import useUserStore from "@/store/modules/users";
+import { useRouter } from "vue-router";
 
 const userStore = useUserStore();
-
+const router = useRouter();
 const form = ref<{ username: string; password: string }>({
   username: "admin",
   password: "123456",
 });
+const loading = ref(false);
+
+const login = async () => {
+  try {
+    loading.value = true;
+    const result = await userStore.login(form.value);
+    if (result === "success") {
+      router.push("/");
+      ElNotification({
+        type: "success",
+        message: "登录成功",
+      });
+    }
+  } catch (err) {
+    ElNotification({
+      type: "error",
+      message: "登录失败",
+    });
+  } finally {
+    loading.value = false;
+  }
+};
 </script>
 
 <style scoped lang="scss">

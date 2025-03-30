@@ -6,7 +6,7 @@ enum API {
   USERINFO_URL = "/user/info",
 }
 
-export const login = (data: LoginFormData) => {
+export const userLogin = (data: LoginFormData) => {
   return request.post<any, LoginResponse>(API.LOGIN_URL, data);
 };
 
