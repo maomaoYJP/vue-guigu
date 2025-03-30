@@ -23,6 +23,9 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import useUserStore from "@/store/modules/users";
+
+const userStore = useUserStore();
 
 const form = ref<{ username: string; password: string }>({
   username: "admin",
