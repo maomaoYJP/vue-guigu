@@ -13,12 +13,13 @@ const svgIconsPlugin = createSvgIconsPlugin({
 
 const autoImportPlugin = AutoImport({
   resolvers: [ElementPlusResolver()],
+  dts: "src/types/auto-import.d.ts",
 });
 
 const componentsPlugin = Components({
   dirs: ["src/components"],
   resolvers: [ElementPlusResolver()],
-  dts: true,
+  dts: "src/types/components.d.ts",
 });
 
 export default defineConfig({

@@ -2,6 +2,7 @@
   <div>
     <h1>图标</h1>
     <SvgIcon name="phone"></SvgIcon>
+    <el-button type="primary" size="default" @click="">嘿嘿</el-button>
   </div>
 </template>
 
