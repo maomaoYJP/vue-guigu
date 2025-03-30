@@ -29,4 +29,11 @@ export default defineConfig({
       "@": path.resolve("./src"),
     },
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@use "@/styles/variable.scss" as *;`,
+      },
+    },
+  },
 });
