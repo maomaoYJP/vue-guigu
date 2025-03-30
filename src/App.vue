@@ -7,19 +7,11 @@
 </template>
 
 <script setup lang="ts">
-import request from "@/utils/request";
+import { login } from "@/api/user";
 
-request
-  .post("/user/login", {
-    username: "admin",
-    password: "123456",
-  })
-  .then((res) => {
-    console.log(res);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+login({ username: "admin", password: "123456" }).then((res) => {
+  console.log(res);
+});
 </script>
 
 <style scoped lang="scss">
