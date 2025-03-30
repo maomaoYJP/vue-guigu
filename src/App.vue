@@ -7,15 +7,18 @@
 </template>
 
 <script setup lang="ts">
-import axios from "axios";
+import request from "@/utils/request";
 
-axios
-  .post("/api/user/login", {
+request
+  .post("/user/login", {
     username: "admin",
     password: "123456",
   })
   .then((res) => {
-    console.log(res.data);
+    console.log(res);
+  })
+  .catch((err) => {
+    console.log(err);
   });
 </script>
 
