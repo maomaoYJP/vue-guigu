@@ -14,6 +14,7 @@ const svgIconsPlugin = createSvgIconsPlugin({
 
 const autoImportPlugin = AutoImport({
   resolvers: [ElementPlusResolver()],
+  imports: ["vue", "vue-router"],
   dts: "src/types/auto-import.d.ts",
 });
 

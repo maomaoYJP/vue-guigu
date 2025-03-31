@@ -2,9 +2,12 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import type { LoginFormData } from "../../api/user/types";
 import { userLogin } from "@/api/user";
+import { route } from "@/router";
+
 // 使用组合式api风格
 const useUserStore = defineStore("users", () => {
   const token = ref(localStorage.getItem("token") || "");
+  const routes = ref(route);
 
   const login = async (data: LoginFormData) => {
     const result = await userLogin(data);
@@ -22,6 +25,7 @@ const useUserStore = defineStore("users", () => {
   return {
     login,
     token,
+    routes,
   };
 });
 

@@ -2,7 +2,7 @@
   <el-container class="layout-container">
     <el-aside class="aside">
       <Logo />
-      <Menu />
+      <Menu :routes="routesRef" />
     </el-aside>
     <el-container>
       <el-header class="header">Header</el-header>
@@ -14,6 +14,20 @@
 <script setup lang="ts">
 import Logo from "@/layout/logo/index.vue";
 import Menu from "@/layout/menu/index.vue";
+import useUserStore from "@/store/modules/users";
+import type { RouteRecordRaw } from "vue-router";
+const userStore = useUserStore();
+
+const handleRoutes = (routes: RouteRecordRaw[]) => {
+  return routes.filter((route) => {
+    if (route.children) {
+      route.children = handleRoutes(route.children);
+    }
+    return !route.meta?.hidden;
+  });
+};
+
+const routesRef = ref<RouteRecordRaw[]>(handleRoutes(userStore.routes));
 </script>
 
 <style scoped lang="scss">
