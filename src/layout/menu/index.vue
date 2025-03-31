@@ -1,20 +1,20 @@
 <template>
   <div class="menu-container">
     <el-scrollbar>
-      <el-menu>
+      <el-menu :router="true" :default-active="$route.path">
         <template v-for="route in routes">
           <el-menu-item :index="route.path" v-if="!route.children"
             ><el-icon>
-              <SvgIcon :name="route.meta?.icon as string"></SvgIcon>
+              <SvgIcon :name="(route.meta?.icon as string)"></SvgIcon>
             </el-icon>
             {{ route.meta?.title }}</el-menu-item
           >
           <el-menu-item
             v-else-if="route.children.length === 1"
-            :index="route.path"
+            :index="route.children[0].path"
           >
             <el-icon>
-              <SvgIcon :name="route.meta?.icon as string"></SvgIcon>
+              <SvgIcon :name="(route.meta?.icon as string)"></SvgIcon>
             </el-icon>
             {{ route.children[0].meta?.title }}
           </el-menu-item>
@@ -22,7 +22,9 @@
             <template #title>{{ route.meta?.title }}</template>
             <el-menu-item v-for="child in route.children" :index="child.path">
               <el-icon>
-                <SvgIcon :name="route.meta?.icon as string"></SvgIcon> </el-icon
+                <SvgIcon
+                  :name="(route.meta?.icon as string)"
+                ></SvgIcon> </el-icon
               >{{ child.meta?.title }}</el-menu-item
             >
           </el-sub-menu>

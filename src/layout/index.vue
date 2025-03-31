@@ -6,7 +6,9 @@
     </el-aside>
     <el-container>
       <el-header class="header">Header</el-header>
-      <el-main class="main">Main</el-main>
+      <el-main class="main">
+        <Main />
+      </el-main>
     </el-container>
   </el-container>
 </template>
@@ -14,6 +16,7 @@
 <script setup lang="ts">
 import Logo from "@/layout/logo/index.vue";
 import Menu from "@/layout/menu/index.vue";
+import Main from "@/layout/main/index.vue";
 import useUserStore from "@/store/modules/users";
 import type { RouteRecordRaw } from "vue-router";
 const userStore = useUserStore();
