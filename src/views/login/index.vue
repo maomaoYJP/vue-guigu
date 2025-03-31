@@ -36,7 +36,6 @@ import { ref } from "vue";
 import useUserStore from "@/store/modules/users";
 import { useRouter } from "vue-router";
 import type { FormInstance, FormRules } from "element-plus";
-import { cellForced } from "element-plus/es/components/table/src/config.mjs";
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -54,7 +53,7 @@ const form = ref<loginForm>({
 const loginFormRef = ref<FormInstance>();
 const loading = ref(false);
 
-const passwordValidator = (rule: any, value: any, callback: any) => {
+const passwordValidator = (_: any, value: any, callback: any) => {
   if (value.length >= 5) {
     callback();
   } else {

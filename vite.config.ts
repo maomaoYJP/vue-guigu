@@ -18,7 +18,7 @@ const autoImportPlugin = AutoImport({
 });
 
 const componentsPlugin = Components({
-  dirs: ["src/components"],
+  dirs: ["src/components/SvgIcon"],
   resolvers: [ElementPlusResolver()],
   dts: "src/types/components.d.ts",
 });
