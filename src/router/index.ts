@@ -5,6 +5,7 @@ export const route = [
     meta: {
       title: "登录",
       hidden: false,
+      icon: "user",
     },
     component: () => import("@/views/login/index.vue"),
   },
@@ -14,6 +15,7 @@ export const route = [
     meta: {
       title: "layout",
       hidden: false,
+      icon: "user",
     },
     component: () => import("@/layout/index.vue"),
     children: [
@@ -23,6 +25,7 @@ export const route = [
         meta: {
           title: "首页",
           hidden: false,
+          icon: "user",
         },
         component: () => import("@/views/home/index.vue"),
       },
@@ -31,7 +34,8 @@ export const route = [
         name: "test",
         meta: {
           title: "测试",
-          hidden: true,
+          hidden: false,
+          icon: "user",
         },
         component: () => import("@/views/home/index.vue"),
       },
