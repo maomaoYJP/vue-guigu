@@ -2,11 +2,17 @@
   <div class="login-container">
     <div class="login-box">
       <h1>登 录</h1>
-      <el-form :model="form" label-width="auto" :inline="false">
-        <el-form-item label="用户名">
+      <el-form
+        :model="form"
+        :rules="loginFormRules"
+        label-width="auto"
+        :inline="false"
+        ref="loginFormRef"
+      >
+        <el-form-item prop="username" label="用户名">
           <el-input v-model="form.username"></el-input>
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item prop="password" label="密码">
           <el-input
             v-model="form.password"
             type="password"
@@ -29,18 +35,52 @@
 import { ref } from "vue";
 import useUserStore from "@/store/modules/users";
 import { useRouter } from "vue-router";
+import type { FormInstance, FormRules } from "element-plus";
+import { cellForced } from "element-plus/es/components/table/src/config.mjs";
 
 const userStore = useUserStore();
 const router = useRouter();
-const form = ref<{ username: string; password: string }>({
+
+interface loginForm {
+  username: string;
+  password: string;
+}
+
+const form = ref<loginForm>({
   username: "admin",
   password: "123456",
 });
+
+const loginFormRef = ref<FormInstance>();
 const loading = ref(false);
+
+const passwordValidator = (rule: any, value: any, callback: any) => {
+  if (value.length >= 5) {
+    callback();
+  } else {
+    callback(new Error("密码至少4位"));
+  }
+};
+
+const loginFormRules = ref<FormRules<loginForm>>({
+  username: [
+    {
+      required: true,
+      min: 6,
+      max: 10,
+      message: "账号至少六位",
+      trigger: "change",
+    },
+  ],
+  password: [
+    { required: true, trigger: "change", validator: passwordValidator },
+  ],
+});
 
 const login = async () => {
   try {
     loading.value = true;
+    await loginFormRef.value?.validate();
     const result = await userStore.login(form.value);
     if (result === "success") {
       router.push("/");
