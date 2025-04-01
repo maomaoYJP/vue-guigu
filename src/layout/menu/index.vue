@@ -20,9 +20,11 @@
             :index="route.children[0].path"
           >
             <el-icon>
-              <SvgIcon :name="(route.meta?.icon as string)"></SvgIcon>
+              <SvgIcon
+                :name="(route.children[0].meta?.icon as string)"
+              ></SvgIcon>
             </el-icon>
-            <template #title>{{ route.meta?.title }}</template>
+            <template #title>{{ route.children[0].meta?.title }}</template>
           </el-menu-item>
           <el-sub-menu :index="route.path" v-else>
             <template #title>
