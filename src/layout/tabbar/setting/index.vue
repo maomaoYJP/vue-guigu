@@ -1,7 +1,7 @@
 <template>
   <div class="tabber-right">
     <el-button size="small" circle>
-      <SvgIcon name="refresh" height="16" width="16" />
+      <SvgIcon name="refresh" height="16" width="16" @click="handleRefresh" />
     </el-button>
     <el-button size="small" circle>
       <SvgIcon name="fullscreen" height="16" width="16" />
@@ -25,6 +25,13 @@
 
 <script setup lang="ts">
 import avatar from "@/assets/images/avatar.jpg";
+import useMenuSettingStore from "@/store/modules/menuSetting";
+
+const menuSetting = useMenuSettingStore();
+
+const handleRefresh = () => {
+  menuSetting.refreshing = true;
+};
 </script>
 
 <style scoped lang="scss">

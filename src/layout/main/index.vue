@@ -2,13 +2,29 @@
   <div>
     <router-view v-slot="{ Component }">
       <transition name="fade">
-        <component :is="Component" />
+        <component :is="Component" v-if="!menuSetting.refreshing" />
       </transition>
     </router-view>
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import useMenuSettingStore from "@/store/modules/menuSetting";
+const menuSetting = useMenuSettingStore();
+
+const flag = ref(true);
+
+watch(
+  () => menuSetting.refreshing,
+  () => {
+    if (menuSetting.refreshing) {
+      nextTick(() => {
+        menuSetting.refreshing = false;
+      });
+    }
+  }
+);
+</script>
 
 <style scoped>
 .fade-enter-from {
