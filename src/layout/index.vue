@@ -1,6 +1,6 @@
 <template>
   <el-container class="layout-container">
-    <el-aside class="aside">
+    <el-aside class="aside" :class="{ fold: menuSettingStore.isCollapse }">
       <Logo />
       <Menu :routes="routesRef" />
     </el-aside>
@@ -21,8 +21,10 @@ import Menu from "@/layout/menu/index.vue";
 import Main from "@/layout/main/index.vue";
 import Tabbar from "@/layout/tabbar/index.vue";
 import useUserStore from "@/store/modules/users";
+import useMenuSettingStore from "@/store/modules/menuSetting";
 import type { RouteRecordRaw } from "vue-router";
 const userStore = useUserStore();
+const menuSettingStore = useMenuSettingStore();
 
 const handleRoutes = (routes: RouteRecordRaw[]) => {
   return routes.filter((route) => {
@@ -42,9 +44,14 @@ const routesRef = ref<RouteRecordRaw[]>(handleRoutes(userStore.routes));
   width: 100%;
 }
 .aside {
-  width: 200px;
+  width: $admin-aside-width;
   height: 100vh;
   background-color: #d9ecff;
+  transition: all 0.3s;
+  overflow: hidden;
+  &.fold {
+    width: $admin-aside-fold-width;
+  }
 }
 .header {
   background-color: #f0f2f5;

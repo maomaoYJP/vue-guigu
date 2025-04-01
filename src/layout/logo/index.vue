@@ -1,12 +1,14 @@
 <template>
   <div class="logo-container">
     <img :src="setting.logo" alt="logo" />
-    <p>{{ setting.title }}</p>
+    <p v-if="!menuSettingStore.isCollapse">{{ setting.title }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 import { setting } from "@/setting";
+import useMenuSettingStore from "@/store/modules/menuSetting";
+const menuSettingStore = useMenuSettingStore();
 </script>
 
 <style scoped lang="scss">
