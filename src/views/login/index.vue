@@ -34,6 +34,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import useUserStore from "@/store/modules/users";
+import { userLogin, getUserInfo } from "@/api/user";
 import { useRouter } from "vue-router";
 import type { FormInstance, FormRules } from "element-plus";
 
@@ -80,13 +81,23 @@ const login = async () => {
   try {
     loading.value = true;
     await loginFormRef.value?.validate();
-    const result = await userStore.login(form.value);
-    if (result === "success") {
+    const user = userStore.user;
+    const result = await userLogin(form.value);
+    if (result.code === 200) {
+      user.token = result.data.token || "";
+      localStorage.setItem("token", user.token);
+      const info = await getUserInfo();
+      user.username = info.data.username;
+      user.avatar = info.data.avatar;
       router.push("/");
       ElNotification({
         type: "success",
         message: "登录成功",
       });
+    } else {
+      localStorage.removeItem("token");
+      user.token = "";
+      throw new Error(result.data.message);
     }
   } catch (err) {
     ElNotification({

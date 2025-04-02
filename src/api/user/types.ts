@@ -11,6 +11,7 @@ export interface Response {
 export interface LoginResponse extends Response {
   data: {
     token?: string;
+    message: string;
   };
 }
 export interface userInfoResponse extends Response {
