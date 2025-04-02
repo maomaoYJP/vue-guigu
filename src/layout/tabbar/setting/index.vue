@@ -22,7 +22,7 @@
       /></span>
       <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item>退出登录</el-dropdown-item>
+          <el-dropdown-item @click="handleLogout">退出登录</el-dropdown-item>
         </el-dropdown-menu>
       </template>
     </el-dropdown>
@@ -32,9 +32,11 @@
 <script setup lang="ts">
 import useMenuSettingStore from "@/store/modules/menuSetting";
 import useUserStore from "@/store/modules/users";
+import { useRouter } from "vue-router";
 
 const menuSetting = useMenuSettingStore();
 const userStore = useUserStore();
+const router = useRouter();
 
 const handleRefresh = () => {
   menuSetting.refreshing = true;
@@ -47,6 +49,14 @@ const handleFullscreen = () => {
   } else {
     document.exitFullscreen();
   }
+};
+
+const handleLogout = () => {
+  userStore.user.avatar = "";
+  localStorage.removeItem("token");
+  userStore.user.token = "";
+  userStore.user.username = "";
+  router.push("/login");
 };
 </script>
 
