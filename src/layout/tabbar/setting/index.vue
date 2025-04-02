@@ -4,7 +4,12 @@
       <SvgIcon name="refresh" height="16" width="16" @click="handleRefresh" />
     </el-button>
     <el-button size="small" circle>
-      <SvgIcon name="fullscreen" height="16" width="16" />
+      <SvgIcon
+        name="fullscreen"
+        height="16"
+        width="16"
+        @click="handleFullscreen"
+      />
     </el-button>
     <el-button size="small" circle>
       <SvgIcon name="setting" height="16" width="16" />
@@ -31,6 +36,15 @@ const menuSetting = useMenuSettingStore();
 
 const handleRefresh = () => {
   menuSetting.refreshing = true;
+};
+
+const handleFullscreen = () => {
+  const fullScreen = document.fullscreenElement;
+  if (!fullScreen) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
 };
 </script>
 

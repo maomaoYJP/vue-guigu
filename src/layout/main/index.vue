@@ -12,8 +12,6 @@
 import useMenuSettingStore from "@/store/modules/menuSetting";
 const menuSetting = useMenuSettingStore();
 
-const flag = ref(true);
-
 watch(
   () => menuSetting.refreshing,
   () => {
