@@ -65,7 +65,7 @@ const loginFormRules = ref<FormRules<loginForm>>({
   username: [
     {
       required: true,
-      min: 6,
+      min: 3,
       max: 10,
       message: "账号至少六位",
       trigger: "change",

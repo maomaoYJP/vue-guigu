@@ -14,10 +14,11 @@
     <el-button size="small" circle>
       <SvgIcon name="setting" height="16" width="16" />
     </el-button>
-    <img :src="avatar" alt="" />
+    <img :src="userStore.user.avatar" alt="" />
     <el-dropdown>
       <span style="font-size: 20px">
-        admin <SvgIcon name="arrowdown" height="14" width="14"
+        {{ userStore.user.username }}
+        <SvgIcon name="arrowdown" height="14" width="14"
       /></span>
       <template #dropdown>
         <el-dropdown-menu>
@@ -29,10 +30,11 @@
 </template>
 
 <script setup lang="ts">
-import avatar from "@/assets/images/avatar.jpg";
 import useMenuSettingStore from "@/store/modules/menuSetting";
+import useUserStore from "@/store/modules/users";
 
 const menuSetting = useMenuSettingStore();
+const userStore = useUserStore();
 
 const handleRefresh = () => {
   menuSetting.refreshing = true;

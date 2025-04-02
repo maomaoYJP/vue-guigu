@@ -61,8 +61,10 @@ export default [
       if (!checkUser) {
         return { code: 201, data: { message: "获取用户信息失败" } };
       }
+
+      const { routes, buttons, roles, username, avatar } = checkUser;
       //如果有返回成功信息
-      return { code: 200, data: { checkUser } };
+      return { code: 200, data: { routes, buttons, roles, username, avatar } };
     },
   },
 ];

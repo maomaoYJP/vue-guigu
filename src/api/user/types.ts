@@ -18,7 +18,7 @@ export interface userInfoResponse extends Response {
     routes: string[];
     buttons: string[];
     roles: string[];
-    name: string;
+    username: string;
     avatar: string;
   };
 }

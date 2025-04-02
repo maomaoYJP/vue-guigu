@@ -35,7 +35,7 @@ const handleRoutes = (routes: RouteRecordRaw[]) => {
   });
 };
 
-const routesRef = ref<RouteRecordRaw[]>(handleRoutes(userStore.routes));
+const routesRef = ref<RouteRecordRaw[]>(handleRoutes(userStore.user.routes));
 </script>
 
 <style scoped lang="scss">
