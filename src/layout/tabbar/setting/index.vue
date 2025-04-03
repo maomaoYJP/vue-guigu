@@ -33,6 +33,7 @@
 import useMenuSettingStore from "@/store/modules/menuSetting";
 import useUserStore from "@/store/modules/users";
 import { useRouter } from "vue-router";
+import { reqLogOut } from "@/api/user";
 
 const menuSetting = useMenuSettingStore();
 const userStore = useUserStore();
@@ -51,15 +52,20 @@ const handleFullscreen = () => {
   }
 };
 
-const handleLogout = () => {
-  userStore.user.avatar = "";
-  localStorage.removeItem("token");
-  userStore.user.token = "";
-  userStore.user.username = "";
-  router.push({
-    path: "/login",
-    query: { redirect: router.currentRoute.value.path },
-  });
+const handleLogout = async () => {
+  const result = await reqLogOut();
+  userStore.resetUser();
+  if (result.code === 200) {
+    router.push({
+      path: "/login",
+      query: { redirect: router.currentRoute.value.path },
+    });
+  } else {
+    ElNotification({
+      type: "error",
+      message: "退出失败",
+    });
+  }
 };
 </script>
 

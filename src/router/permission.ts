@@ -3,7 +3,7 @@ import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import useUserStore from "@/store/modules/users";
 import pinia from "@/store";
-import { getUserInfo } from "@/api/user";
+import { reqUserInfo, reqLogOut } from "@/api/user";
 
 const userStore = useUserStore(pinia);
 
@@ -21,19 +21,17 @@ router.beforeEach(async (to, from, next) => {
     }
     // 没有用户名，需要获取用户信息
     try {
-      const res = await getUserInfo();
+      const res = await reqUserInfo();
       if (res.code === 200) {
-        userStore.user.username = res.data.username;
+        userStore.user.username = res.data.name;
         userStore.user.avatar = res.data.avatar;
         next();
       } else {
         throw new Error("获取用户信息失败");
       }
     } catch (error) {
-      userStore.user.avatar = "";
-      localStorage.removeItem("token");
-      userStore.user.token = "";
-      userStore.user.username = "";
+      await reqLogOut();
+      userStore.resetUser();
       next({ path: "/login", query: { redirect: to.path } });
     }
   } else {

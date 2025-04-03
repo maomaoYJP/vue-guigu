@@ -9,17 +9,14 @@ export interface Response {
 }
 
 export interface LoginResponse extends Response {
-  data: {
-    token?: string;
-    message: string;
-  };
+  data: string;
 }
 export interface userInfoResponse extends Response {
   data: {
     routes: string[];
     buttons: string[];
     roles: string[];
-    username: string;
+    name: string;
     avatar: string;
   };
 }

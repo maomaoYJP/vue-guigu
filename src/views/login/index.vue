@@ -34,7 +34,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import useUserStore from "@/store/modules/users";
-import { userLogin, getUserInfo } from "@/api/user";
+import { reqLogin, reqUserInfo } from "@/api/user";
 import { useRouter } from "vue-router";
 import type { FormInstance, FormRules } from "element-plus";
 
@@ -48,7 +48,7 @@ interface loginForm {
 
 const form = ref<loginForm>({
   username: "admin",
-  password: "123456",
+  password: "111111",
 });
 
 const loginFormRef = ref<FormInstance>();
@@ -82,12 +82,12 @@ const login = async () => {
     loading.value = true;
     await loginFormRef.value?.validate();
     const user = userStore.user;
-    const result = await userLogin(form.value);
+    const result = await reqLogin(form.value);
     if (result.code === 200) {
-      user.token = result.data.token || "";
+      user.token = result.data || "";
       localStorage.setItem("token", user.token);
-      const info = await getUserInfo();
-      user.username = info.data.username;
+      const info = await reqUserInfo();
+      user.username = info.data.name;
       user.avatar = info.data.avatar;
       router.push((router.currentRoute.value.query.redirect as string) || "/");
       ElNotification({
@@ -95,11 +95,10 @@ const login = async () => {
         message: "登录成功",
       });
     } else {
-      localStorage.removeItem("token");
-      user.token = "";
-      throw new Error(result.data.message);
+      throw new Error(result.message);
     }
   } catch (err) {
+    userStore.resetUser();
     ElNotification({
       type: "error",
       message: "登录失败",

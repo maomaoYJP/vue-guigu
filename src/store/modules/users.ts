@@ -19,8 +19,19 @@ const useUserStore = defineStore("users", () => {
     routes: route,
   });
 
+  const resetUser = () => {
+    user.value = {
+      username: "",
+      avatar: "",
+      token: "",
+      routes: route,
+    };
+    localStorage.removeItem("token");
+  };
+
   return {
     user,
+    resetUser,
   };
 });
 
