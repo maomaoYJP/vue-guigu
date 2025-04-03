@@ -56,7 +56,10 @@ const handleLogout = () => {
   localStorage.removeItem("token");
   userStore.user.token = "";
   userStore.user.username = "";
-  router.push("/login");
+  router.push({
+    path: "/login",
+    query: { redirect: router.currentRoute.value.path },
+  });
 };
 </script>
 
