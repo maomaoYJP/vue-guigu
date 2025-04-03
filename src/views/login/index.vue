@@ -89,7 +89,7 @@ const login = async () => {
       const info = await getUserInfo();
       user.username = info.data.username;
       user.avatar = info.data.avatar;
-      router.push("/");
+      router.push((router.currentRoute.value.query.redirect as string) || "/");
       ElNotification({
         type: "success",
         message: "登录成功",
