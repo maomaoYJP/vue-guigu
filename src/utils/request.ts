@@ -3,7 +3,7 @@ import useUserStore from "@/store/modules/users";
 
 const request = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API,
-  timeout: 5000,
+  timeout: 3000,
 });
 
 request.interceptors.request.use(
@@ -35,6 +35,7 @@ request.interceptors.response.use(
     let message = "";
     let status = error?.response?.status || null;
     if (error.code === "ECONNABORTED") status = 408;
+    if (error.code === "ERR_CANCELED") return Promise.reject(error);
     switch (status) {
       case 401:
         message = "未登录";

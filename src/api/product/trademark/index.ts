@@ -5,5 +5,11 @@ enum API {
   TRADEMARK_URL = "/admin/product/baseTrademark/",
 }
 
-export const reqGetTrademarkList = (page: number, limit: number) =>
-  request.get<any, TradeMarkResponse>(API.TRADEMARK_URL + `${page}/${limit}`);
+export const reqGetTrademarkList = (
+  page: number,
+  limit: number,
+  signal: AbortSignal
+) =>
+  request.get<any, TradeMarkResponse>(API.TRADEMARK_URL + `${page}/${limit}`, {
+    signal,
+  });

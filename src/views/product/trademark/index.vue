@@ -58,12 +58,20 @@ const pageSize = ref(3);
 const total = ref(400);
 const trademarkList = ref<TradeMark[]>([]);
 const isLoading = ref(false);
+const controller = ref<AbortController | null>(null);
 
 const getTrademarkList = async (pager = 1) => {
   try {
+    if (controller.value) controller.value.abort();
+    controller.value = new AbortController();
+    const signal = controller.value.signal;
     isLoading.value = true;
     currentPage.value = pager;
-    const res = await reqGetTrademarkList(currentPage.value, pageSize.value);
+    const res = await reqGetTrademarkList(
+      currentPage.value,
+      pageSize.value,
+      signal
+    );
     if (res.code === 200) {
       total.value = res.data.total;
       trademarkList.value = res.data.records;
