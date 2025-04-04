@@ -33,8 +33,18 @@
           </el-table-column>
           <el-table-column label="品牌操作">
             <template #default="scope">
-              <el-button type="primary" size="small">编辑</el-button>
-              <el-button type="danger" size="small">删除</el-button>
+              <el-button
+                type="primary"
+                size="small"
+                @click="editTrademark(scope.row)"
+                >编辑</el-button
+              >
+              <el-button
+                type="danger"
+                size="small"
+                @click="deleteTrademark(scope.row.id)"
+                >删除</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -99,6 +109,7 @@
 import {
   reqGetTrademarkList,
   reqAddOrUpdateTrademark,
+  reqDeleteTrademark,
 } from "@/api/product/trademark";
 import type { TradeMark } from "@/api/product/trademark/types";
 import SvgIcon from "@/components/SvgIcon/index.vue";
@@ -152,21 +163,47 @@ const addTrademark = async () => {
       });
       dialogVisible.value = false;
       productUploadForm.value = {
+        id: 0,
         tmName: "",
         logoUrl: "",
       };
-      getTrademarkList();
+      getTrademarkList(currentPage.value);
       return;
     }
     throw new Error(res.message);
   } catch (error) {
-    console.log(error);
     ElMessage({
       type: "error",
       message: "添加失败",
     });
   } finally {
     addTrademarkLoading.value = false;
+  }
+};
+
+const editTrademark = (row: TradeMark) => {
+  dialogVisible.value = true;
+  const { id, tmName, logoUrl } = row;
+  productUploadForm.value = { id, tmName, logoUrl };
+};
+
+const deleteTrademark = async (id: number) => {
+  try {
+    const res = await reqDeleteTrademark(id);
+    if (res.code === 200) {
+      ElMessage({
+        type: "success",
+        message: "删除成功",
+      });
+      getTrademarkList(currentPage.value);
+      return;
+    }
+    throw new Error(res.message);
+  } catch (error) {
+    ElMessage({
+      type: "error",
+      message: "删除失败",
+    });
   }
 };
 
@@ -208,6 +245,13 @@ const handleAvatarError = (_: any) => {
 <style scoped lang="scss">
 .table-container {
   margin: 20px 0;
+}
+
+.avatar-uploader .avatar {
+  width: 200px;
+  height: 200px;
+  display: block;
+  object-fit: cover;
 }
 </style>
 <style>
