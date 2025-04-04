@@ -16,12 +16,7 @@
               >
             </div>
           </template>
-          <el-table-column
-            label="序号"
-            width="100"
-            align="center"
-            type="index"
-          />
+          <el-table-column label="序号" width="100" align="center" prop="id" />
           <el-table-column label="品牌名称">
             <template #default="scope">
               <div>{{ scope.row.tmName }}</div>
@@ -59,11 +54,25 @@
     <el-dialog v-model="dialogVisible" title="添加品牌" width="500">
       <el-form>
         <el-form-item label="品牌名称">
-          <el-input placeholder="请输入品牌名称" />
+          <el-input
+            v-model="productUploadForm.tmName"
+            placeholder="请输入品牌名称"
+          />
         </el-form-item>
         <el-form-item label="品牌logo">
-          <el-upload class="avatar-uploader">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+          <el-upload
+            class="avatar-uploader"
+            action="/api/admin/product/fileUpload"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+            :show-file-list="false"
+            :on-error="handleAvatarError"
+          >
+            <img
+              v-if="productUploadForm.logoUrl"
+              :src="productUploadForm.logoUrl"
+              class="avatar"
+            />
             <el-icon v-else class="avatar-uploader-icon">
               <SvgIcon name="plus" />
             </el-icon>
@@ -73,7 +82,11 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="dialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="dialogVisible = false">
+          <el-button
+            type="primary"
+            @click="addTrademark"
+            :loading="addTrademarkLoading"
+          >
             确定
           </el-button>
         </div>
@@ -83,7 +96,10 @@
 </template>
 
 <script setup lang="ts">
-import { reqGetTrademarkList } from "@/api/product/trademark";
+import {
+  reqGetTrademarkList,
+  reqAddOrUpdateTrademark,
+} from "@/api/product/trademark";
 import type { TradeMark } from "@/api/product/trademark/types";
 import SvgIcon from "@/components/SvgIcon/index.vue";
 const currentPage = ref(1);
@@ -93,8 +109,11 @@ const trademarkList = ref<TradeMark[]>([]);
 const isLoading = ref(false);
 const controller = ref<AbortController | null>(null);
 const dialogVisible = ref(false);
-const imageUrl = ref("");
-
+const productUploadForm = ref<TradeMark>({
+  tmName: "",
+  logoUrl: "",
+});
+const addTrademarkLoading = ref(false);
 const getTrademarkList = async (pager = 1) => {
   try {
     if (controller.value) controller.value.abort();
@@ -121,6 +140,69 @@ const getTrademarkList = async (pager = 1) => {
 onMounted(() => {
   getTrademarkList();
 });
+
+const addTrademark = async () => {
+  addTrademarkLoading.value = true;
+  try {
+    const res = await reqAddOrUpdateTrademark(productUploadForm.value);
+    if (res.code === 200) {
+      ElMessage({
+        type: "success",
+        message: "添加成功",
+      });
+      dialogVisible.value = false;
+      productUploadForm.value = {
+        tmName: "",
+        logoUrl: "",
+      };
+      getTrademarkList();
+      return;
+    }
+    throw new Error(res.message);
+  } catch (error) {
+    console.log(error);
+    ElMessage({
+      type: "error",
+      message: "添加失败",
+    });
+  } finally {
+    addTrademarkLoading.value = false;
+  }
+};
+
+const handleAvatarSuccess = (res: any) => {
+  productUploadForm.value.logoUrl = res.data;
+};
+
+const beforeAvatarUpload = (rawFile: File) => {
+  if (
+    rawFile.type === "image/png" ||
+    rawFile.type === "image/jpeg" ||
+    rawFile.type === "image/gif"
+  ) {
+    if (rawFile.size / 1024 / 1024 < 4) {
+      return true;
+    } else {
+      ElMessage({
+        type: "error",
+        message: "上传的文件大小应小于4M",
+      });
+    }
+  } else {
+    ElMessage({
+      type: "error",
+      message: "上传的文件类型必须是PNG|JPG|GIF",
+    });
+    return false;
+  }
+};
+
+const handleAvatarError = (_: any) => {
+  ElMessage({
+    type: "error",
+    message: "上传失败",
+  });
+};
 </script>
 
 <style scoped lang="scss">

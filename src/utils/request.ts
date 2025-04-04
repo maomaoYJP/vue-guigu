@@ -3,7 +3,7 @@ import useUserStore from "@/store/modules/users";
 
 const request = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API,
-  timeout: 3000,
+  timeout: 1000,
 });
 
 request.interceptors.request.use(
