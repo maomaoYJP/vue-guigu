@@ -1,5 +1,4 @@
 import axios from "axios";
-import { ElMessage } from "element-plus";
 import useUserStore from "@/store/modules/users";
 
 const request = axios.create({
@@ -34,7 +33,8 @@ request.interceptors.response.use(
   },
   (error) => {
     let message = "";
-    let status = error.response.status;
+    let status = error?.response?.status || null;
+    if (error.code === "ECONNABORTED") status = 408;
     switch (status) {
       case 401:
         message = "未登录";
@@ -44,6 +44,9 @@ request.interceptors.response.use(
         break;
       case 404:
         message = "网络请求不存在";
+        break;
+      case 408:
+        message = "请求超时";
         break;
       case 500:
         message = "服务器出现问题";
