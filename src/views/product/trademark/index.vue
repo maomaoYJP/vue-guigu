@@ -62,14 +62,18 @@
       />
     </el-card>
     <el-dialog v-model="dialogVisible" title="添加品牌" width="500">
-      <el-form>
-        <el-form-item label="品牌名称">
+      <el-form
+        :model="productUploadForm"
+        :rules="productUploadFormRules"
+        ref="productUploadFormRef"
+      >
+        <el-form-item label="品牌名称" prop="tmName">
           <el-input
             v-model="productUploadForm.tmName"
             placeholder="请输入品牌名称"
           />
         </el-form-item>
-        <el-form-item label="品牌logo">
+        <el-form-item label="品牌logo" prop="logoUrl">
           <el-upload
             class="avatar-uploader"
             action="/api/admin/product/fileUpload"
@@ -112,6 +116,7 @@ import {
   reqDeleteTrademark,
 } from "@/api/product/trademark";
 import type { TradeMark } from "@/api/product/trademark/types";
+import type { FormInstance } from "element-plus";
 import SvgIcon from "@/components/SvgIcon/index.vue";
 const currentPage = ref(1);
 const pageSize = ref(3);
@@ -125,6 +130,8 @@ const productUploadForm = ref<TradeMark>({
   logoUrl: "",
 });
 const addTrademarkLoading = ref(false);
+const productUploadFormRef = ref<FormInstance>();
+
 const getTrademarkList = async (pager = 1) => {
   try {
     if (controller.value) controller.value.abort();
@@ -153,8 +160,9 @@ onMounted(() => {
 });
 
 const addTrademark = async () => {
-  addTrademarkLoading.value = true;
   try {
+    await productUploadFormRef.value?.validate();
+    addTrademarkLoading.value = true;
     const res = await reqAddOrUpdateTrademark(productUploadForm.value);
     if (res.code === 200) {
       ElMessage({
@@ -240,6 +248,22 @@ const handleAvatarError = (_: any) => {
     message: "上传失败",
   });
 };
+
+const validateLogoUrl = (_: any, value: any, callback: any) => {
+  if (!value) {
+    callback(new Error("请上传品牌logo"));
+  } else {
+    callback();
+  }
+};
+
+const productUploadFormRules = ref({
+  tmName: [{ required: true, message: "请输入品牌名称", trigger: "blur" }],
+  logoUrl: [
+    { required: true, message: "请上传品牌logo", trigger: "blur" },
+    { validator: validateLogoUrl, trigger: "blur" },
+  ],
+});
 </script>
 
 <style scoped lang="scss">
