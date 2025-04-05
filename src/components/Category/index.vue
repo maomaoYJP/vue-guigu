@@ -2,7 +2,12 @@
   <el-card>
     <el-form ref="form" :inline="true">
       <el-form-item label="一级分类">
-        <el-select style="width: 250px" v-model="c1Id" @change="handleC2List">
+        <el-select
+          style="width: 250px"
+          v-model="c1Id"
+          @change="handleC2List"
+          :disabled="isAdd"
+        >
           <el-option
             v-for="item in c1List"
             :label="item.name"
@@ -11,7 +16,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="二级分类">
-        <el-select style="width: 250px" v-model="c2Id" @change="handleC3List">
+        <el-select
+          style="width: 250px"
+          v-model="c2Id"
+          @change="handleC3List"
+          :disabled="isAdd"
+        >
           <el-option
             v-for="item in c2List"
             :label="item.name"
@@ -20,7 +30,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="三级分类"
-        ><el-select style="width: 250px" v-model="c3Id" @change="c3Change">
+        ><el-select
+          style="width: 250px"
+          v-model="c3Id"
+          @change="c3Change"
+          :disabled="isAdd"
+        >
           <el-option
             v-for="item in c3List"
             :label="item.name"
@@ -37,6 +52,7 @@ defineProps<{
   c1List: any[];
   c2List: any[];
   c3List: any[];
+  isAdd: boolean;
 }>();
 
 const c1Id = ref("");
