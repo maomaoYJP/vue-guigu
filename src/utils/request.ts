@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { type InternalAxiosRequestConfig } from "axios";
 import useUserStore from "@/store/modules/users";
 
 const request = axios.create({
@@ -6,9 +6,19 @@ const request = axios.create({
   timeout: 1000,
 });
 
+interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
+  retryCount?: number;
+}
+
+// 最大重试次数
+const MAX_RETRIES = 3;
+// 重试间隔时间（毫秒）
+const RETRY_DELAY = 500;
+
 request.interceptors.request.use(
-  (config) => {
+  (config: CustomAxiosRequestConfig) => {
     const userStore = useUserStore();
+    config.retryCount = config.retryCount || 0;
     if (userStore.user.token) {
       config.headers.token = userStore.user.token;
     }
@@ -32,6 +42,7 @@ request.interceptors.response.use(
     }
   },
   (error) => {
+    const config = error.config;
     let message = "";
     let status = error?.response?.status || null;
     if (error.code === "ECONNABORTED") status = 408;
@@ -60,6 +71,15 @@ request.interceptors.response.use(
       type: "error",
       message,
     });
+    if (config && config.retryCount < MAX_RETRIES) {
+      config.retryCount++;
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(request(config));
+        }, RETRY_DELAY);
+      });
+    }
+
     return Promise.reject(error);
   }
 );

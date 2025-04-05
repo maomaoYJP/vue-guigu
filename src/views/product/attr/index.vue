@@ -3,13 +3,13 @@
     <Category
       @c1Change="getC2List"
       @c2Change="getC3List"
-      @c3Change="(flag) => (isAdd = !flag)"
+      @getCId="(idList) => (addDisabled = idList[2] === '')"
       :c1List="c1List"
       :c2List="c2List"
       :c3List="c3List"
     />
     <el-card style="margin: 10px 0">
-      <el-button type="primary" size="default" :disabled="isAdd">
+      <el-button type="primary" size="default" :disabled="addDisabled">
         添加属性
       </el-button>
       <el-table border style="margin: 10px 0">
@@ -31,7 +31,7 @@ const c1List = ref<CategoryObj[]>([]);
 const c2List = ref<CategoryObj[]>([]);
 const c3List = ref<CategoryObj[]>([]);
 
-const isAdd = ref(true);
+const addDisabled = ref(true);
 
 const getC1List = async () => {
   try {

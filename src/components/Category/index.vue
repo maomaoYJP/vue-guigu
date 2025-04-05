@@ -43,20 +43,22 @@ const c1Id = ref("");
 const c2Id = ref("");
 const c3Id = ref("");
 
-const emit = defineEmits(["c1Change", "c2Change", "c3Change"]);
+const emit = defineEmits(["c1Change", "c2Change", "getCId"]);
 
 const handleC2List = () => {
   c2Id.value = "";
   c3Id.value = "";
   emit("c1Change", c1Id.value);
+  emit("getCId", [c1Id.value, c2Id.value, c3Id.value]);
 };
 const handleC3List = () => {
   c3Id.value = "";
   emit("c2Change", c2Id.value);
+  emit("getCId", [c1Id.value, c2Id.value, c3Id.value]);
 };
 
 const c3Change = () => {
-  emit("c3Change", c3Id.value);
+  emit("getCId", [c1Id.value, c2Id.value, c3Id.value]);
 };
 </script>
 
