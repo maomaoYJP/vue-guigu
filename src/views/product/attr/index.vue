@@ -15,7 +15,7 @@
           type="primary"
           size="default"
           :disabled="addDisabled"
-          @click="addOrEditAttr()"
+          @click="openEditDialog()"
         >
           添加属性
         </el-button>
@@ -45,7 +45,7 @@
               <el-button
                 type="primary"
                 size="default"
-                @click="addOrEditAttr(row)"
+                @click="openEditDialog(row)"
                 >编辑</el-button
               >
               <el-button type="danger" size="default">删除</el-button>
@@ -57,15 +57,20 @@
         <div>
           <span>属性名称</span>
           <el-input
+            v-model="addAttrObj.attrName"
             placeholder="请输入属性名称"
             style="width: 240px; margin-left: 10px"
           ></el-input>
         </div>
         <div style="margin-top: 10px">
-          <el-button type="primary">添加属性</el-button>
+          <el-button type="primary" @click="addOrEditAttr">添加属性</el-button>
           <el-button type="primary" style="margin-left: 10px">取消</el-button>
         </div>
-        <el-table border style="margin: 10px 0">
+        <el-table
+          border
+          style="margin: 10px 0"
+          :data="addAttrObj.attrValueList"
+        >
           <el-table-column
             type="index"
             label="序号"
@@ -77,18 +82,23 @@
               <el-input
                 placeholder="请输入属性值名称"
                 style="width: 240px"
+                v-model="row.valueName"
               ></el-input>
             </template>
           </el-table-column>
           <el-table-column label="操作">
             <template #="{ row }">
-              <el-button type="primary" size="default">编辑</el-button>
-              <el-button type="danger" size="default">删除</el-button>
+              <el-button
+                type="danger"
+                size="default"
+                @click="deleteAttrValue(row)"
+                >删除</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
         <div>
-          <el-button type="primary">保存</el-button>
+          <el-button type="primary" @click="saveAttr">保存</el-button>
           <el-button type="primary" style="margin-left: 10px" @click="cancelAdd"
             >取消</el-button
           >
@@ -99,14 +109,21 @@
 </template>
 
 <script setup lang="ts">
-import type { CategoryObj, Attr } from "@/api/product/attr/types";
+import type { CategoryObj, Attr, AttrValue } from "@/api/product/attr/types";
 import Category from "@/components/Category/index.vue";
-import { reqC1, reqC2, reqC3, reqAttr } from "@/api/product/attr";
+import {
+  reqC1,
+  reqC2,
+  reqC3,
+  reqAttr,
+  reqAddOrUpdateAttr,
+} from "@/api/product/attr";
 
 const c1List = ref<CategoryObj[]>([]);
 const c2List = ref<CategoryObj[]>([]);
 const c3List = ref<CategoryObj[]>([]);
 
+const cId = ref<string[]>(["", "", ""]);
 const addDisabled = ref(true);
 const attrList = ref<Attr[]>([]);
 const isAdd = ref(false);
@@ -160,6 +177,7 @@ const getC3List = async (c2Id: string) => {
 const getCId = async (idList: string[]) => {
   addDisabled.value = idList[2] === "";
   try {
+    cId.value = idList;
     if (idList[2] !== "") {
       const res = await reqAttr(idList[0], idList[1], idList[2]);
       if (res.code === 200) {
@@ -175,8 +193,34 @@ const cancelAdd = () => {
   isAdd.value = false;
 };
 
-const addOrEditAttr = (row?: Attr) => {
+const openEditDialog = (row?: Attr) => {
+  addAttrObj.value.categoryId = cId.value[2];
   isAdd.value = true;
+};
+
+const addOrEditAttr = async () => {
+  addAttrObj.value.attrValueList.push({
+    valueName: "",
+  });
+};
+
+const saveAttr = async () => {
+  try {
+    const res = await reqAddOrUpdateAttr(addAttrObj.value);
+    if (res.code === 200) {
+      ElMessage.success("添加属性成功");
+      isAdd.value = false;
+      await getCId(cId.value);
+    }
+  } catch (err) {
+    ElMessage.error("添加属性失败");
+  }
+};
+
+const deleteAttrValue = (row: AttrValue) => {
+  addAttrObj.value.attrValueList = addAttrObj.value.attrValueList.filter(
+    (item) => item.id !== row.id
+  );
 };
 </script>
 
