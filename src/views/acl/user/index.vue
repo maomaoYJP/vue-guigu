@@ -30,7 +30,7 @@
         <el-table-column label="创建时间" prop="createTime" />
         <el-table-column label="更新时间" prop="updateTime" />
         <el-table-column label="操作" width="180">
-          <template #default="row">
+          <template #default="{ row }">
             <el-button type="primary" size="small">分配角色</el-button>
             <el-button type="warning" size="small" @click="updateUser(row)"
               >编辑</el-button
@@ -54,16 +54,18 @@
     <el-drawer v-model="drawer" title="编辑用户" direction="rtl">
       <el-form>
         <el-form-item label="用户姓名">
-          <el-input />
+          <el-input v-model="userAddOrUpdate.username" />
         </el-form-item>
         <el-form-item label="用户名称">
-          <el-input />
+          <el-input v-model="userAddOrUpdate.name" />
         </el-form-item>
         <el-form-item label="用户密码">
-          <el-input />
+          <el-input v-model="userAddOrUpdate.password" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" size="default">保存</el-button>
+          <el-button type="primary" size="default" @click="addOrUpdateUser"
+            >保存</el-button
+          >
           <el-button type="primary" size="default" @click="drawer = false"
             >取消</el-button
           >
@@ -80,8 +82,13 @@ const total = ref(0);
 const drawer = ref(false);
 
 import type { User } from "@/api/acl/user/types";
-import { reqUserInfo } from "@/api/acl/user";
+import { reqUserInfo, reqAddOrUpdateUser } from "@/api/acl/user";
 const userInfoList = ref<User[]>([]);
+const userAddOrUpdate = ref<User>({
+  username: "",
+  name: "",
+  password: "",
+});
 
 const getUserInfo = (pager = 1) => {
   currentPage.value = pager;
@@ -96,7 +103,17 @@ onMounted(() => {
 });
 
 const updateUser = (row: User) => {
+  const { username, name, password } = row;
+  userAddOrUpdate.value = { username, name, password };
   drawer.value = true;
+};
+
+const addOrUpdateUser = async () => {
+  const res = await reqAddOrUpdateUser(userAddOrUpdate.value);
+  if (res.code === 200) {
+    drawer.value = false;
+    getUserInfo();
+  }
 };
 </script>
 
