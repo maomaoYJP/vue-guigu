@@ -32,7 +32,7 @@
       />
     </div>
     <div v-show="changeScene === 1">
-      <SpuForm @cancel="changeScene = 0" />
+      <SpuForm @cancel="changeScene = 0" ref="spuFormRef" />
     </div>
     <div v-show="changeScene === 2">
       <SkuForm @cancel="changeScene = 0" />
@@ -51,7 +51,7 @@ const pageSize = ref(3);
 const spuData = ref<SpuData[]>([]);
 const total = ref(0);
 const changeScene = ref(0);
-
+const spuFormRef = ref();
 const hasSpu = async (pager = 1) => {
   currentPage.value = pager;
   const res = await reqHasSpu(currentPage.value, pageSize.value);
@@ -69,6 +69,7 @@ const addSpu = () => {
 };
 const editSpu = (row: SpuData) => {
   changeScene.value = 1;
+  spuFormRef.value.getSpuData(row);
 };
 </script>
 

@@ -44,10 +44,42 @@
 </template>
 
 <script setup lang="ts">
+import type {
+  SpuData,
+  Trademark,
+  SpuImg,
+  SaleAttr,
+} from "@/api/product/spu/types";
+import {
+  reqAllTradeMark,
+  reqSpuImageList,
+  reqSpuHasSaleAttr,
+  reqAllSalAttr,
+} from "@/api/product/spu";
 const emit = defineEmits(["cancel"]);
 const cancel = () => {
   emit("cancel", 0);
 };
+
+const allTradeMark = ref<Trademark[]>([]);
+const spuImageList = ref<SpuImg[]>([]);
+const saleAttr = ref<SaleAttr[]>([]);
+const allSaleAttr = ref<SaleAttr[]>([]);
+
+const getSpuData = async (row: SpuData) => {
+  let allTradeMarkData = await reqAllTradeMark();
+  let spuImageListData = await reqSpuImageList(row.id as string);
+  let saleAttrData = await reqSpuHasSaleAttr(row.id as string);
+  let allSaleAttrData = await reqAllSalAttr();
+  allTradeMark.value = allTradeMarkData.data;
+  spuImageList.value = spuImageListData.data;
+  saleAttr.value = saleAttrData.data;
+  allSaleAttr.value = allSaleAttrData.data;
+};
+
+defineExpose({
+  getSpuData,
+});
 </script>
 
 <style scoped></style>
