@@ -16,18 +16,28 @@
       </div>
     </el-card>
     <el-card style="margin-top: 10px">
-      <el-button type="primary" size="default">添加</el-button>
+      <el-button type="primary" size="default" @click="drawer = true"
+        >添加</el-button
+      >
       <el-button type="danger" size="default">批量删除</el-button>
-      <el-table border style="margin-top: 10px">
+      <el-table border style="margin-top: 10px" :data="userInfoList">
         <el-table-column type="selection" width="55" />
-        <el-table-column label="#" width="60" />
-        <el-table-column label="id" width="60" />
-        <el-table-column label="用户名字" />
-        <el-table-column label="用户名称" />
-        <el-table-column label="用户角色" />
-        <el-table-column label="创建时间" />
-        <el-table-column label="更新时间" />
-        <el-table-column label="操作" />
+        <el-table-column label="#" width="60" type="index" />
+        <el-table-column label="id" width="60" prop="id" />
+        <el-table-column label="用户名字" prop="username" />
+        <el-table-column label="用户名称" prop="name" />
+        <el-table-column label="用户角色" prop="roleName" />
+        <el-table-column label="创建时间" prop="createTime" />
+        <el-table-column label="更新时间" prop="updateTime" />
+        <el-table-column label="操作" width="180">
+          <template #default="row">
+            <el-button type="primary" size="small">分配角色</el-button>
+            <el-button type="warning" size="small" @click="updateUser(row)"
+              >编辑</el-button
+            >
+            <el-button type="danger" size="small">删除</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <el-pagination
         style="margin-top: 10px"
@@ -36,15 +46,58 @@
         :page-sizes="[3, 5, 7, 9]"
         :background="true"
         layout="prev, pager, next, jumper,->,total, sizes"
-        :total="4"
+        :total="total"
+        @current-change="getUserInfo"
+        @size-change="getUserInfo(1)"
       />
     </el-card>
+    <el-drawer v-model="drawer" title="编辑用户" direction="rtl">
+      <el-form>
+        <el-form-item label="用户姓名">
+          <el-input />
+        </el-form-item>
+        <el-form-item label="用户名称">
+          <el-input />
+        </el-form-item>
+        <el-form-item label="用户密码">
+          <el-input />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" size="default">保存</el-button>
+          <el-button type="primary" size="default" @click="drawer = false"
+            >取消</el-button
+          >
+        </el-form-item>
+      </el-form>
+    </el-drawer>
   </div>
 </template>
 
 <script setup lang="ts">
 const currentPage = ref(1);
 const pageSize = ref(3);
+const total = ref(0);
+const drawer = ref(false);
+
+import type { User } from "@/api/acl/user/types";
+import { reqUserInfo } from "@/api/acl/user";
+const userInfoList = ref<User[]>([]);
+
+const getUserInfo = (pager = 1) => {
+  currentPage.value = pager;
+  reqUserInfo(currentPage.value, pageSize.value).then((res) => {
+    userInfoList.value = res.data.records;
+    total.value = res.data.total;
+  });
+};
+
+onMounted(() => {
+  getUserInfo();
+});
+
+const updateUser = (row: User) => {
+  drawer.value = true;
+};
 </script>
 
 <style scoped></style>
