@@ -31,7 +31,9 @@
         <el-table-column label="更新时间" prop="updateTime" />
         <el-table-column label="操作" width="180">
           <template #default="{ row }">
-            <el-button type="primary" size="small">分配角色</el-button>
+            <el-button type="primary" size="small" @click="assignRole(row)"
+              >分配角色</el-button
+            >
             <el-button type="warning" size="small" @click="updateUser(row)"
               >编辑</el-button
             >
@@ -71,6 +73,37 @@
           >
         </el-form-item>
       </el-form>
+    </el-drawer>
+    <el-drawer v-model="assignRoleDrawer">
+      <template #header>
+        <h4>分配角色</h4>
+      </template>
+      <template #default>
+        <el-form>
+          <el-form-item label="用户姓名">
+            <el-input :disabled="true" :value="assignRoleDrawerData.username" />
+          </el-form-item>
+          <el-form-item label="角色列表">
+            <el-checkbox> 全选 </el-checkbox>
+            <el-checkbox-group>
+              <el-checkbox
+                v-for="(role, index) in 10"
+                :key="index"
+                :label="role"
+                :value="role"
+              >
+                {{ role }}
+              </el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+        </el-form>
+      </template>
+      <template #footer>
+        <div style="flex: auto">
+          <el-button>保存</el-button>
+          <el-button type="primary">取消</el-button>
+        </div>
+      </template>
     </el-drawer>
   </div>
 </template>
@@ -114,6 +147,16 @@ const addOrUpdateUser = async () => {
     drawer.value = false;
     getUserInfo();
   }
+};
+
+const assignRoleDrawer = ref(false);
+const assignRoleDrawerData = ref<any>({
+  username: "",
+  role: [],
+});
+const assignRole = (row: User) => {
+  assignRoleDrawerData.value.username = row.username;
+  assignRoleDrawer.value = true;
 };
 </script>
 
